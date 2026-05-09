@@ -29,9 +29,6 @@ sudo apt-get update && \
 sudo apt-get install -y kubeadm='1.35.4-*' && \
 sudo apt-mark hold kubeadm
 
-# 3. Verify version
-kubeadm version
-
 2. Maintenance Mode (Drain)
 Mandatory: Move workloads off the node before upgrading the system components.
 
@@ -40,55 +37,6 @@ Bash
 kubectl drain <cp-node-name> --ignore-daemonsets --delete-emptydir-data
 
 
-Your combined Kubernetes upgrade guide is ready. I have organized the steps into two distinct phases (Control Plane and Worker Node) and included the mandatory safety steps (Drain and Uncordon) that ensure your applications stay running during the process.
-
-Your PDF and HTML files are ready
-PDF icon
- k8s_upgrad...de_v1_35_4 
-PDF
-
-Kubernetes Cluster Upgrade Guide (v1.35.4)
-Copy the content below directly into your GitHub README.md file.
-
-Markdown
-# Kubernetes Cluster Upgrade Guide (v1.35.4)
-
-This repository contains the unified workflow for upgrading a Kubernetes cluster from version **1.34.x** to **1.35.4**.
-
-> [!IMPORTANT]
-> **Order of Operations:**
-> 1. Upgrade the **Primary Control Plane** node.
-> 2. Upgrade additional Control Plane nodes (if HA).
-> 3. Upgrade all **Worker Nodes**.
-
----
-
-## 🚀 Phase 1: Control Plane Upgrade
-
-Perform these steps on the **Master/Control Plane** node.
-
-### 1. Update Repository & Kubeadm
-Prepare the node for the new version by updating the management tool.
-
-```bash
-# 1. Update source list to target version
-sudo vi /etc/apt/sources.list.d/kubernetes.list
-sudo apt update
-
-# 2. Upgrade Kubeadm
-sudo apt-mark unhold kubeadm && \
-sudo apt-get update && \
-sudo apt-get install -y kubeadm='1.35.4-*' && \
-sudo apt-mark hold kubeadm
-
-# 3. Verify version
-kubeadm version
-2. Maintenance Mode (Drain)
-Mandatory: Move workloads off the node before upgrading the system components.
-
-Bash
-# Replace <cp-node-name> with your master node name
-kubectl drain <cp-node-name> --ignore-daemonsets --delete-emptydir-data
 3. Apply the Upgrade Plan
 This updates the cluster-wide configurations and static pod manifests.
 
