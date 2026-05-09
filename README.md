@@ -31,7 +31,7 @@ sudo apt-get install -y kubeadm='1.35.4-*' && \
 sudo apt-mark hold kubeadm
 ```
 2. Maintenance Mode (Drain)
-# Replace <cp-node-name> with your master node name
+ Replace <cp-node-name> with your master node name
 ```
 kubectl drain <cp-node-name> --ignore-daemonsets --delete-emptydir-data
 ```
