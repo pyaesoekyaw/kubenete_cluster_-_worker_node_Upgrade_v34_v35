@@ -22,72 +22,77 @@ Prepare the node for the new version by updating the management tool.
 sudo vi /etc/apt/sources.list.d/kubernetes.list
 # update the version from v1.34 to v1.35
 sudo apt update
-
+```
 # 2. Upgrade Kubeadm
+```
 sudo apt-mark unhold kubeadm && \
 sudo apt-get update && \
 sudo apt-get install -y kubeadm='1.35.4-*' && \
 sudo apt-mark hold kubeadm
-
+```
 2. Maintenance Mode (Drain)
-Mandatory: Move workloads off the node before upgrading the system components.
-
-Bash
 # Replace <cp-node-name> with your master node name
+```
 kubectl drain <cp-node-name> --ignore-daemonsets --delete-emptydir-data
-
+```
 
 3. Apply the Upgrade Plan
-This updates the cluster-wide configurations and static pod manifests.
-
-Bash
+```
 sudo kubeadm upgrade plan
 sudo kubeadm upgrade apply v1.35.4
-4. Upgrade Kubelet & Kubectl
+```
+5. Upgrade Kubelet & Kubectl
 Update the node's agent and the command-line interface.
-
-Bash
+```
 sudo apt-mark unhold kubelet kubectl && \
 sudo apt-get update && \
 sudo apt-get install -y kubelet='1.35.4-*' kubectl='1.35.4-*' && \
 sudo apt-mark hold kubelet kubectl
-
+```
 # Restart services
+```
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
+```
 5. Finalize Node
-Bash
+
+```
 kubectl uncordon <cp-node-name>
+```
 👷 Phase 2: Worker Node Upgrade
-Repeat these steps for every worker node in the cluster, one at a time.
 
 1. Drain the Node (Run on Control Plane)
-Securely evict pods before the worker goes offline.
 
-Bash
+```
 kubectl drain <worker-node-name> --ignore-daemonsets --delete-emptydir-data
+```
 2. Upgrade Kubeadm (Run on Worker)
-Bash
+```Bash
 sudo vi /etc/apt/sources.list.d/kubernetes.list
 sudo apt-mark unhold kubeadm && \
 sudo apt-get update && \
 sudo apt-get install -y kubeadm='1.35.4-*' && \
 sudo apt-mark hold kubeadm
+```
 3. Upgrade Node Config (Run on Worker)
-Bash
+```Bash
 sudo kubeadm upgrade node
+```
 4. Upgrade Kubelet & Kubectl (Run on Worker)
-Bash
+```Bash
 sudo apt-mark unhold kubelet kubectl && \
 sudo apt-get update && \
 sudo apt-get install -y kubelet='1.35.4-*' kubectl='1.35.4-*' && \
 sudo apt-mark hold kubelet kubectl
-
+```
 # Restart services
+```
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
+```
 5. Uncordon the Node (Run on Control Plane)
 Bring the worker back into the scheduling rotation.
 
-Bash
+```Bash
 kubectl uncordon <worker-node-name>
+```
